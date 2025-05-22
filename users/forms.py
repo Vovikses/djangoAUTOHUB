@@ -10,8 +10,8 @@ class UserRegistrationForm(UserCreationForm):
 
     def clean_password1(self):
         password1 = self.cleaned_data.get('password1')
-            if password1 and len(password1) < 8:
-                self.add_error('password1', 'Minimum 8 characters.')
+        if password1 and len(password1) < 8:
+         self.add_error('password1', 'Minimum 8 characters.')
         return password1
 
     def clean_password2(self):
