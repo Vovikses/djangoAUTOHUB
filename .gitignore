@@ -1,7 +1,7 @@
 # Віртуальне середовище
 venv/
 .pylintrc
-__pycacha__/
+__pycache__/
 
 .vscode
 .idea
