@@ -9,10 +9,10 @@
         <thead>
             <tr>
                 <th>Товар</th>
-                <th>Количество</th>
-                <th>Удалить</th>
-                <th>Цена за единицу</th>
-                <th>Общая стоимость</th>
+                <th>Кількість</th>
+                <th>Видалити</th>
+                <th>Ціна за одиницю</th>
+                <th>Повна вартість</th>
             </tr>
         </thead>
         <tbody>
@@ -23,7 +23,7 @@
                     <form action="{% url 'cart:cart_add' item.product.id %}" method="post">
                         {{ item.update_quantity_form.quantity }}
                         {{ item.update_quantity_form.override }}
-                        <button type="submit" class="btn btn-sm btn-outline-secondary">Обновить</button>
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">Оновити</button>
                         {% csrf_token %}
                     </form>
                 </td>
@@ -35,19 +35,19 @@
                         {% csrf_token %}
                     </form>
                 </td>
-                <td>{{ item.price }} руб.</td>
-                <td>{{ item.total_price }} руб.</td>
+                <td>{{ item.price }} грн.</td>
+                <td>{{ item.total_price }} грн.</td>
             </tr>
         {% empty %}
             <tr>
-                <td colspan="5">Ваша корзина пуста</td>
+                <td colspan="5">Корзина пуста</td>
             </tr>
         {% endfor %}
 
         {% if cart.get_total_price %}
             <tr class="table-active">
-                <td colspan="4">Итого:</td>
-                <td>{{ cart.get_total_price }} руб.</td>
+                <td colspan="4">Всього:</td>
+                <td>{{ cart.get_total_price }} грн.</td>
             </tr>
         {% endif %}
         </tbody>
@@ -55,7 +55,7 @@
 </div>
 
 <div class="d-flex justify-content-between">
-    <a href="{% url 'main:product_list' %}" class="btn btn-outline-secondary">Продолжить покупки</a>
-    <a href="#" class="btn btn-primary">Оформить заказ</a>
+    <a href="{% url 'main:product_list' %}" class="btn btn-outline-secondary">Продовжити покупки</a>
+    <a href="{% url 'orders:order_create' %}" class="btn btn-primary">Оформити замовлення</a>
 </div>
 {% endblock %}

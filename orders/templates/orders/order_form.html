@@ -1,0 +1,83 @@
+{% extends "main/product/base.html" %}
+{% load static %}
+
+{% block title %}Reverence Interlude - Order Create{% endblock title %}
+
+{% block content %}
+<div class="order-form-container mt-5 d-flex flex-column gap-5">
+    <h1 class="text-center mb-5">Shopping Cart</h1>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Кількість</th>
+                    <th>Видалити</th>
+                    <th>Ціна за одиницю</th>
+                    <th>Повна вартість</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>
+                            <form action="{% url 'cart:cart_add' item.product.id %}" method="post">
+                                {{ item.update_quantity_form.quantity }}
+                                {{ item.update_quantity_form.override }}
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">Оновити</button>
+                                {% csrf_token %}
+                            </form>
+                        </td>
+                        <td>
+                            <form action="{% url 'cart:cart_remove' item.product.id %}" method="post">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                {% csrf_token %}
+                            </form>
+                        </td>
+                        <td>{{ item.price }} грн.</td>
+                        <td>{{ item.total_price }} грн.</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">Корзина пуста</td>
+                    </tr>
+                {% endfor %}
+
+                {% if cart.get_total_price %}
+                    <tr class="table-active">
+                        <td colspan="4">Всього:</td>
+                        <td>{{ cart.get_total_price }} грн.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <h3 class="total_price_cart mt-3">Total price: {{ cart.get_total_price|floatformat:2 }} грн.</h3>
+
+    <div class="form-for-order">
+        <form method="post" class="d-flex gap-5">
+            {% csrf_token %}
+            <div class="form-blocks">
+                <div class="block1 d-flex flex-column gap-1">
+                    {{ form.first_name.label_tag }} {{ form.first_name }}<br>
+                    {{ form.last_name.label_tag }} {{ form.last_name }}<br>
+                    {{ form.middle_name.label_tag }} {{ form.middle_name }}<br>
+                    {{ form.city.label_tag }} {{ form.city }}<br>
+                    {{ form.street.label_tag }} {{ form.street }}<br>
+                    {{ form.house_number.label_tag }} {{ form.house_number }}<br>
+                </div>
+                <div class="block2 d-flex flex-column gap-1">
+                    {{ form.apartment_number.label_tag }} {{ form.apartment_number }}<br>
+                    {{ form.postal_code.label_tag }} {{ form.postal_code }}<br>
+                </div>
+            </div>
+            <button class="default-btn order-form-btn">Place Order</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}
