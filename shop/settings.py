@@ -123,7 +123,13 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  # тут хранятся исходники статики
+]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # сюда будет собираться статика командой collectstatic
+
 
 
 MEDIA_URL = '/media/'

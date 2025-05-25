@@ -1,82 +1,425 @@
 {% extends "main/product/base.html" %}
 {% load static %}
 
-{% block title %}Reverence Interlude - Order Create{% endblock title %}
+{% block title %}Оформлення замовлення{% endblock title %}
 
 {% block content %}
-<div class="order-form-container mt-5 d-flex flex-column gap-5">
-    <h1 class="text-center mb-5">Shopping Cart</h1>
+<style>
+/* Order form styles */
+.order-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
 
-    <div class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Товар</th>
-                    <th>Кількість</th>
-                    <th>Видалити</th>
-                    <th>Ціна за одиницю</th>
-                    <th>Повна вартість</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in cart %}
-                    <tr>
-                        <td>{{ item.product.name }}</td>
-                        <td>
-                            <form action="{% url 'cart:cart_add' item.product.id %}" method="post">
-                                {{ item.update_quantity_form.quantity }}
-                                {{ item.update_quantity_form.override }}
-                                <button type="submit" class="btn btn-sm btn-outline-secondary">Оновити</button>
-                                {% csrf_token %}
-                            </form>
-                        </td>
-                        <td>
-                            <form action="{% url 'cart:cart_remove' item.product.id %}" method="post">
-                                <button type="submit" class="btn btn-sm btn-danger">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                                {% csrf_token %}
-                            </form>
-                        </td>
-                        <td>{{ item.price }} грн.</td>
-                        <td>{{ item.total_price }} грн.</td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="5">Корзина пуста</td>
-                    </tr>
-                {% endfor %}
+.order-title {
+    font-size: 32px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 40px;
+    text-align: center;
+}
 
-                {% if cart.get_total_price %}
-                    <tr class="table-active">
-                        <td colspan="4">Всього:</td>
-                        <td>{{ cart.get_total_price }} грн.</td>
+.cart-section {
+    margin-bottom: 40px;
+}
+
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.cart-table th {
+    background-color: #f8f9fa;
+    color: #333;
+    font-weight: 600;
+    padding: 16px;
+    text-align: left;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.cart-table td {
+    padding: 16px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+}
+
+.cart-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.cart-table tr:last-child td {
+    border-bottom: none;
+}
+
+.product-name {
+    font-weight: 500;
+    color: #333;
+    font-size: 16px;
+}
+
+.quantity-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.quantity-input {
+    width: 60px;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.btn-update {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-update:hover {
+    background-color: #218838;
+}
+
+.btn-remove {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    transition: all 0.2s ease;
+}
+
+.btn-remove:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
+}
+
+.price {
+    font-weight: 500;
+    color: #333;
+}
+
+.total-price {
+    font-weight: 600;
+    color: #FF5500;
+    font-size: 16px;
+}
+
+.total-row {
+    background-color: #f8f9fa !important;
+    font-weight: 600;
+}
+
+.total-row td {
+    border-top: 2px solid #dee2e6;
+    padding: 20px 16px;
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    color: #666;
+    font-size: 18px;
+}
+
+.total-price-display {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 30px;
+    border: 2px solid #FF5500;
+}
+
+.total-price-display h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #FF5500;
+    margin: 0;
+}
+
+.order-form-section {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.order-form {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.form-blocks {
+    flex: 1;
+    display: flex;
+    gap: 30px;
+}
+
+.form-block {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-field label {
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.form-field input {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.2s ease;
+}
+
+.form-field input:focus {
+    outline: none;
+    border-color: #FF5500;
+    box-shadow: 0 0 0 2px rgba(255, 85, 0, 0.1);
+}
+
+.order-btn {
+    background-color: #FF5500;
+    color: white;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    height: fit-content;
+}
+
+.order-btn:hover {
+    background-color: #e64a00;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 85, 0, 0.3);
+}
+
+/* Responsive design */
+@media (max-width: 992px) {
+    .order-form {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .form-blocks {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .order-btn {
+        align-self: center;
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .order-container {
+        padding: 16px;
+    }
+    
+    .order-title {
+        font-size: 24px;
+    }
+    
+    .cart-table {
+        font-size: 14px;
+    }
+    
+    .cart-table th,
+    .cart-table td {
+        padding: 12px 8px;
+    }
+    
+    .quantity-form {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .order-form-section {
+        padding: 20px;
+    }
+    
+    .total-price-display h3 {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .cart-table th:nth-child(3),
+    .cart-table td:nth-child(3) {
+        display: none;
+    }
+    
+    .cart-table th:nth-child(4),
+    .cart-table td:nth-child(4) {
+        display: none;
+    }
+    
+    .btn-remove {
+        width: 30px;
+        height: 30px;
+        padding: 6px;
+    }
+    
+    .form-field input {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .order-btn {
+        padding: 12px 24px;
+        font-size: 16px;
+    }
+}
+</style>
+
+<div class="order-container">
+    <h1 class="order-title">Оформлення замовлення</h1>
+
+    <div class="cart-section">
+        <div style="overflow-x: auto;">
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Товар</th>
+                        <th>Кількість</th>
+                        <th>Видалити</th>
+                        <th>Ціна за одиницю</th>
+                        <th>Повна вартість</th>
                     </tr>
-                {% endif %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for item in cart %}
+                        <tr>
+                            <td>
+                                <div class="product-name">{{ item.product.name }}</div>
+                            </td>
+                            <td>
+                                <form action="{% url 'cart:cart_add' item.product.id %}" method="post" class="quantity-form">
+                                    {{ item.update_quantity_form.quantity }}
+                                    {{ item.update_quantity_form.override }}
+                                    <button type="submit" class="btn-update">Оновити</button>
+                                    {% csrf_token %}
+                                </form>
+                            </td>
+                            <td>
+                                <form action="{% url 'cart:cart_remove' item.product.id %}" method="post">
+                                    <button type="submit" class="btn-remove">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                    {% csrf_token %}
+                                </form>
+                            </td>
+                            <td>
+                                <span class="price">{{ item.price }} грн.</span>
+                            </td>
+                            <td>
+                                <span class="total-price">{{ item.total_price }} грн.</span>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="empty-cart">Корзина пуста</td>
+                        </tr>
+                    {% endfor %}
+
+                    {% if cart.get_total_price %}
+                        <tr class="total-row">
+                            <td colspan="4"><strong>Всього:</strong></td>
+                            <td><strong class="total-price" style="font-size: 20px;">{{ cart.get_total_price }} грн.</strong></td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <h3 class="total_price_cart mt-3">Total price: {{ cart.get_total_price|floatformat:2 }} грн.</h3>
+    {% if cart.get_total_price %}
+        <div class="total-price-display">
+            <h3>Загальна вартість: {{ cart.get_total_price|floatformat:2 }} грн.</h3>
+        </div>
+    {% endif %}
 
-    <div class="form-for-order">
-        <form method="post" class="d-flex gap-5">
+    <div class="order-form-section">
+        <form method="post" class="order-form">
             {% csrf_token %}
             <div class="form-blocks">
-                <div class="block1 d-flex flex-column gap-1">
-                    {{ form.first_name.label_tag }} {{ form.first_name }}<br>
-                    {{ form.last_name.label_tag }} {{ form.last_name }}<br>
-                    {{ form.middle_name.label_tag }} {{ form.middle_name }}<br>
-                    {{ form.city.label_tag }} {{ form.city }}<br>
-                    {{ form.street.label_tag }} {{ form.street }}<br>
-                    {{ form.house_number.label_tag }} {{ form.house_number }}<br>
+                <div class="form-block">
+                    <div class="form-field">
+                        {{ form.first_name.label_tag }}
+                        {{ form.first_name }}
+                    </div>
+                    <div class="form-field">
+                        {{ form.last_name.label_tag }}
+                        {{ form.last_name }}
+                    </div>
+                    <div class="form-field">
+                        {{ form.middle_name.label_tag }}
+                        {{ form.middle_name }}
+                    </div>
+                    <div class="form-field">
+                        {{ form.city.label_tag }}
+                        {{ form.city }}
+                    </div>
                 </div>
-                <div class="block2 d-flex flex-column gap-1">
-                    {{ form.apartment_number.label_tag }} {{ form.apartment_number }}<br>
-                    {{ form.postal_code.label_tag }} {{ form.postal_code }}<br>
+                <div class="form-block">
+                    <div class="form-field">
+                        {{ form.street.label_tag }}
+                        {{ form.street }}
+                    </div>
+                    <div class="form-field">
+                        {{ form.house_number.label_tag }}
+                        {{ form.house_number }}
+                    </div>
+                    <div class="form-field">
+                        {{ form.apartment_number.label_tag }}
+                        {{ form.apartment_number }}
+                    </div>
+                    <div class="form-field">
+                        {{ form.postal_code.label_tag }}
+                        {{ form.postal_code }}
+                    </div>
                 </div>
             </div>
-            <button class="default-btn order-form-btn">Place Order</button>
+            <button type="submit" class="order-btn">Оформити замовлення</button>
         </form>
     </div>
 </div>
