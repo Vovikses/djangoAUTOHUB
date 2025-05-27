@@ -1,6 +1,10 @@
 {% extends "main/product/base.html" %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'main/list.css' %}">
+{% endblock %}
+
 {% block title %}
   {% if category %}
     {{ category.name }}
@@ -10,57 +14,62 @@
 {% endblock %}
 
 {% block content %}
-  <link rel="stylesheet" href="{% static 'main/list.css' %}">
+<div class="header-container">
+  <h1 class="page-title">
+    {% if category %}
+      {{ category.name }}
+    {% else %}
+      Всі товари
+    {% endif %}
+  </h1>
 
-  <div class="header-container">
-    <h1 class="page-title">
-      {% if category %}
-        {{ category.name }}
-      {% else %}
-        Всі товари
-      {% endif %}
-    </h1>
+  <div class="filters-sorting-wrapper">
+    <form method="get" class="filters-form">
+      <label>Мін. ціна:</label>
+      <input type="number" name="min_price" value="{{ selected_min_price }}" min="0">
 
-    <div class="dropdown">
-      <button class="btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton">
-        Сортування
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <li><a class="dropdown-item" href="?sort=name">За назвою (А-Я)</a></li>
-        <li><a class="dropdown-item" href="?sort=-name">За назвою (Я-А)</a></li>
-        <li><a class="dropdown-item" href="?sort=price">Ціна (дешевші)</a></li>
-        <li><a class="dropdown-item" href="?sort=-price">Ціна (дорожчі)</a></li>
-      </ul>
+      <label>Макс. ціна:</label>
+      <input type="number" name="max_price" value="{{ selected_max_price }}" min="0">
+
+      <label class="checkbox-label">
+        <input type="checkbox" name="available" value="1" {% if selected_available == '1' %}checked{% endif %}>
+        Тільки в наявності
+      </label>
+
+      <input type="hidden" name="sort" value="{{ current_sort }}">
+      <button type="submit" class="btn btn-primary">Фільтрувати</button>
+    </form>
+
+    <div class="sort-dropdown-wrapper">
+      <div class="custom-dropdown">
+        <button class="btn-orange dropdown-toggle" type="button">Сортування</button>
+        <ul class="dropdown-menu-custom">
+          <li><a href="?sort=name">За назвою (А-Я)</a></li>
+          <li><a href="?sort=-name">За назвою (Я-А)</a></li>
+          <li><a href="?sort=price">Ціна (дешевші)</a></li>
+          <li><a href="?sort=-price">Ціна (дорожчі)</a></li>
+        </ul>
+      </div>
     </div>
   </div>
+</div>
 
-  {% if not products %}
-    <div class="alert-info">
-      <i class="bi bi-info-circle"></i>
-      Товари цієї категорії відсутні
-    </div>
-  {% else %}
-    <div class="products-grid">
-      {% for product in products %}
-        <div class="product-card">
-          <a href="{{ product.get_absolute_url }}" class="product-link">
-            <div class="product-image-container">
-              <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}">
-            </div>
-            
-            <div class="product-info">
-              <h3 class="product-title">{{ product.name }}</h3>
-              
-              <div class="product-status">
-                <i class="bi bi-check-circle-fill"></i>
-                <span>Готовий до відправки</span>
-              </div>
-              
-              <div class="product-price">{{ product.price }} ₴</div>
-            </div>
-          </a>
+<div class="products-grid">
+  {% for product in products %}
+    <div class="product-card">
+      <a href="{{ product.get_absolute_url }}" class="product-link">
+        <div class="product-image-container">
+          <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
         </div>
-      {% endfor %}
+        <div class="product-info">
+          <h3 class="product-title">{{ product.name }}</h3>
+          <p class="product-status">
+            <i class="bi bi-check-circle-fill"></i> Готовий до відправки
+          </p>
+          <p class="product-price">{{ product.price }} ₴</p>
+        </div>
+      </a>
     </div>
-  {% endif %}
+  {% endfor %}
+</div>
 {% endblock %}

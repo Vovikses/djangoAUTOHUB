@@ -35,23 +35,20 @@ class Cart:
     def __iter__(self):
         product_ids = self.cart.keys()
         products = Product.objects.filter(id__in=product_ids)
-        cart = self.cart.copy()
+        existing_ids = {str(p.id) for p in products}
 
+        for pid in list(self.cart.keys()):
+            if pid not in existing_ids:
+                del self.cart[pid]
+                self.save()
+
+        cart = self.cart.copy()
         for product in products:
             cart_item = cart[str(product.id)]
             cart_item['product'] = product
             cart_item['price'] = Decimal(cart_item['price'])
             cart_item['total_price'] = cart_item['price'] * cart_item['quantity']
-
-            cart_item['update_quantity_form'] = CartAddProductForm(
-                initial={
-                    'quantity': cart_item['quantity'],
-                    'override': True
-                }
-            )
-
             yield cart_item
-
             
     def __len__(self):
         return sum(item['quantity'] for item in self.cart.values())

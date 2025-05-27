@@ -1,10 +1,28 @@
 {% extends "main/product/base.html" %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
 {% block title %}Корзина{% endblock %}
 
 {% block content %}
+
 <style>
-/* Cart styles */
+
+input[type="number"] {
+  width: 60px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  text-align: center;
+  transition: border-color 0.2s ease-in-out;
+}
+
+input[type="number"]:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
+}
+
 .cart-container {
     max-width: 1000px;
     margin: 0 auto;
@@ -234,6 +252,7 @@
         padding: 10px 20px;
         font-size: 14px;
     }
+  
 }
 </style>
 
@@ -282,7 +301,7 @@
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="5" class="empty-cart">Корзина пуста</td>
+                    <td colspan="5" class="empty-cart">Корзина порожня</td>
                 </tr>
             {% endfor %}
 

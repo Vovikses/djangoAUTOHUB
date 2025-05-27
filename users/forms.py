@@ -7,6 +7,12 @@ class UserRegistrationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('email', 'password1', 'password2')
+        widgets = {
+            'email': forms.EmailInput(attrs={'autocomplete': 'email'}),
+            'password1': forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+            'password2': forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+        }
+
 
     def clean_password1(self):
         password1 = self.cleaned_data.get('password1')

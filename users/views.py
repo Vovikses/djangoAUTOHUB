@@ -48,7 +48,7 @@ def profile(request):
             form.save()
             return redirect('users:profile')
     else:
-        form = UserProfileForm(user=user)
+        form = UserProfileForm(instance=user)
         orders = Order.objects.filter(user=user)
 
     return render(request, 'users/profile.html', {

@@ -2,34 +2,52 @@
 <!DOCTYPE html>
 <html lang="uk">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}Головна{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'main/style.css' %}" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
-  </head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}AUTOHUB{% endblock %}</title>
+  
+  <link rel="stylesheet" href="{% static 'main/style.css' %}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  {% block extra_css %}{% endblock %}
+</head>
   <body>
     <header class="navbar">
-      <div class="container">
+      <div class="container" style="justify-content: space-between;">
         <a class="navbar-brand" href="{% url 'main:product_list' %}">
-            <img src="{% static 'images/logo.png' %}" alt="AUTOHUB" class="navbar-logo">
+          <img src="{% static 'images/logo.png' %}" alt="AUTOHUB" class="navbar-logo">
         </a>
-        <nav class="nav-links">
-          <a href="{% url 'main:product_list' %}">Всі товари</a>
-          {% for category in categories %}
-          <a href="{{ category.get_absolute_url }}">{{ category.name }}</a>
-          {% endfor %}
-        </nav>
-        <a href="{% url 'cart:cart_detail' %}" class="cart-button">
-    Корзина
-    <span class="cart-count">
-        {% with total_items=cart|length %}
-            {{ total_items|default:0 }}
-        {% endwith %}
-    </span>
-</a>
 
-        </a>
+        <div class="dropdown-nav">
+          <a href="{% url 'main:product_list' %}" class="dropdown-trigger">ВСІ ТОВАРИ</a>
+          <ul class="dropdown-menu-nav">
+            {% for category in categories %}
+              <li><a href="{{ category.get_absolute_url }}">{{ category.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <a href="{% url 'cart:cart_detail' %}" class="cart-button">
+            Корзина
+            <span class="cart-count">
+              {% with total_items=cart|length %}
+                  {{ total_items|default:0 }}
+              {% endwith %}
+            </span>
+          </a>
+
+          <div class="user-bar">
+            {% if user.is_authenticated %}
+              <span class="user-greeting">
+                <a href="{% url 'users:profile' %}" class="user-link">{{ user.first_name|default:user.email }}</a>
+              </span>
+              <a href="{% url 'users:logout' %}" class="logout-btn">Вийти</a>
+            {% else %}
+              <a href="{% url 'login' %}" class="auth-link">Увійти</a>
+            {% endif %}
+          </div>
+        </div>
       </div>
     </header>
 
@@ -52,9 +70,9 @@
         <div class="footer-info">
         <h5>Соціальні мережі</h5>
         <div class="social-icons">
-          <a href="#"><i class="bi bi-facebook"></i></a>
-          <a href="#"><i class="bi bi-instagram"></i></a>
-          <a href="#"><i class="bi bi-telegram"></i></a>
+          <a href="https://www.facebook.com/profile.php?id=100008427182651"><i class="bi bi-facebook"></i></a>
+          <a href="https://www.instagram.com/vikhmanov/"><i class="bi bi-instagram"></i></a>
+          <a href="https://t.me/Vikhmanov"><i class="bi bi-telegram"></i></a>
         </div>
       </div>
     </footer>

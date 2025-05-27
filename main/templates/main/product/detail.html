@@ -67,15 +67,14 @@
               <div class="quantity-section">
                 <label class="quantity-label">Кількість:</label>
                 <div class="quantity-controls">
-                  <button type="button" class="quantity-btn" onclick="decreaseQuantity()">
-                    <i class="bi bi-dash"></i>
-                  </button>
-                  {{ cart_product_form.quantity }}
-                  <button type="button" class="quantity-btn" onclick="increaseQuantity()">
-                    <i class="bi bi-plus"></i>
-                  </button>
+                  <button type="button" class="quantity-btn" onclick="decreaseQuantity()">−</button>
+
+                  <input type="number" name="quantity" value="1" min="1" class="quantity-input" id="quantityInput" />
+
+                  <button type="button" class="quantity-btn" onclick="increaseQuantity()">+</button>
                 </div>
               </div>
+
               {{ cart_product_form.override }}
               {% csrf_token %}
               <button type="submit" class="btn-primary">
@@ -144,28 +143,21 @@
 
   <script>
     function increaseQuantity() {
-      const input = document.querySelector('input[name="quantity"]');
-      const currentValue = parseInt(input.value) || 1;
-      input.value = currentValue + 1;
+      const input = document.getElementById("quantityInput");
+      input.value = parseInt(input.value || "1") + 1;
     }
-
     function decreaseQuantity() {
-      const input = document.querySelector('input[name="quantity"]');
-      const currentValue = parseInt(input.value) || 1;
-      if (currentValue > 1) {
-        input.value = currentValue - 1;
+      const input = document.getElementById("quantityInput");
+      if (parseInt(input.value || "1") > 1) {
+        input.value = parseInt(input.value) - 1;
       }
     }
 
-    // Add quantity input styling
-    document.addEventListener('DOMContentLoaded', function() {
-      const quantityInput = document.querySelector('input[name="quantity"]');
-      if (quantityInput) {
-        quantityInput.className = 'quantity-input';
-        quantityInput.type = 'number';
-        quantityInput.min = '1';
-        quantityInput.value = quantityInput.value || '1';
-      }
-    });
+  document.addEventListener('DOMContentLoaded', function() {
+  const input = document.querySelector('input.quantity-input');
+  if (input) {
+    input.setAttribute('type', 'text'); // Це повністю прибере стрілки, але тоді доведеться контролювати лише числа вручну
+  }
+});
   </script>
 {% endblock %}
