@@ -19,7 +19,7 @@
         </a>
 
         <div class="dropdown-nav">
-          <a href="{% url 'main:product_list' %}" class="dropdown-trigger">ВСІ ТОВАРИ</a>
+          <a href="{% url 'main:product_list' %}" class="dropdown-trigger">Категорії товарів</a>
           <ul class="dropdown-menu-nav">
             {% for category in categories %}
               <li><a href="{{ category.get_absolute_url }}">{{ category.name }}</a></li>

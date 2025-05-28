@@ -10,8 +10,13 @@ body {
   background-color: #f8f9fa;
   color: #333;
   line-height: 1.6;
+  margin: 0;
+
 }
 
+html {
+  scroll-behavior: smooth;
+}
 .container {
   width: 90%;
   max-width: 1200px;
@@ -25,12 +30,18 @@ body {
   padding: 15px 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   border-bottom: 1px solid #e9ecef;
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; 
 }
 
 .navbar .container {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+  padding: 0 20px;
 }
 
 .navbar-brand {
@@ -43,17 +54,18 @@ body {
 }
 
 .navbar-logo {
-  height: 32px;
+  height: 26px;
   margin-right: 10px;
+  width: auto;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
   margin-left: 15px;
-  flex-wrap: wrap; /* Allow links to wrap if too many */
-  flex-grow: 1; /* Allow nav-links to take available space */
-  flex-shrink: 1; /* Allow shrinking if needed */
+  flex-wrap: wrap;
+  flex-grow: 1; 
+  flex-shrink: 1;
 }
 
 .nav-links a {
@@ -85,7 +97,7 @@ body {
   font-size: 1.1rem;
   transition: all 0.3s ease;
   border: 2px solid #333;
-  margin-left: auto; /* Push cart button to the right */
+  margin-left: auto; 
 }
 
 .cart-button:hover {
@@ -173,53 +185,10 @@ main.container {
   transform: scale(1.2);
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-  .navbar .container {
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .nav-links {
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  .nav-links a {
-    margin: 5px;
-    font-size: 1rem;
-    padding: 8px 12px;
-  }
-  
-  .cart-button {
-    padding: 10px 16px;
-    font-size: 1rem;
-    margin-left: 0; /* Remove margin-left in column layout */
-  }
-}
 
-@media (max-width: 576px) {
-  .nav-links a {
-    margin: 3px;
-    padding: 6px 10px;
-    font-size: 0.9rem;
-  }
   
-  .cart-button {
-    padding: 8px 14px;
-    font-size: 0.9rem;
-  }
-  
-  .footer-info {
-    align-items: center;
-  }
-  
-  .social-icons {
-    justify-content: center;
-  }
-}
+ 
+
 
 .user-bar {
   display: flex;
@@ -262,7 +231,7 @@ main.container {
 
 .user-link:hover {
   color: #FF5500;
-  text-decoration: none; /* прибрали підкреслення */
+  text-decoration: none; 
 }
 
 .logout-btn {
@@ -282,20 +251,6 @@ main.container {
   text-decoration: none;
 }
 
-@media (max-width: 576px) {
-  .user-bar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .user-greeting {
-    font-size: 14px;
-  }
-
-  .auth-link {
-    font-size: 14px;
-  }
-}
 
 .dropdown-nav {
   position: relative;
@@ -468,8 +423,117 @@ main.container {
   color: #FF5500;
 }
 
-/* показувати меню при наведенні */
+
 .custom-dropdown:hover .dropdown-menu-custom {
   display: block;
 }
 
+/* Responsive styles */
+@media (max-width: 992px) {
+  .navbar .container {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .dropdown-nav {
+    order: 3;
+    width: 100%;
+  }
+  
+  .dropdown-trigger {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .dropdown-menu-nav {
+    left: 0;
+    right: 0;
+    width: 100%;
+  }
+  
+  body {
+    padding-top: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 10px 0;
+  }
+  
+  .navbar .container {
+    flex-direction: column;
+    gap: 15px;
+    padding: 0 16px;
+  }
+  
+  .navbar-logo {
+    height: 35px;
+  }
+  
+  .cart-button {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+  
+  .user-bar {
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  body {
+    padding-top: 140px;
+  }
+}
+
+@media (max-width: 576px) {
+  .navbar .container {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .cart-button {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
+  
+  .footer-info {
+    align-items: center;
+  }
+  
+  .social-icons {
+    justify-content: center;
+  }
+  
+  .user-bar {
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .user-greeting {
+    font-size: 14px;
+  }
+  
+  .auth-link {
+    font-size: 14px;
+  }
+  
+  body {
+    padding-top: 160px;
+  }
+  
+  .filters-form {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .filters-form input[type="number"] {
+    width: 100%;
+  }
+  
+  .filters-form button {
+    width: 100%;
+  }
+}

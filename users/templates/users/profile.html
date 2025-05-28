@@ -1,33 +1,34 @@
 {% extends "main/product/base.html" %}
 {% load static %}
 
-{% block title %}Reverence Interlude - Profile{% endblock title %}
+{% block title %}Reverence Interlude - Профіль{% endblock title %}
 
 {% block content %}
-<h1 class="text-center mb-5">Orders history</h1>
+<link rel="stylesheet" href="{% static 'main/profile.css' %}">
+<h1 class="text-center mb-5">Історія замовлень</h1>
 <div class="profile d-flex flex-column gap-4 justify-content-center">
 
     <div class="profile-history">
         <div class="table-head d-flex justify-content-between align-items-center">
             <div class="left-side-head">
-                <p class="table-p">Product</p>
+                <p class="table-p">Товар</p>
             </div>
             <div class="right-side-head d-flex gap-3">
-                <p class="table-p c-item-total">Price</p>
-                <p class="table-p c-item-quantity">Quantity</p>
-                <p class="table-p c-item-price">Total</p>
+                <p class="table-p c-item-total">Ціна</p>
+                <p class="table-p c-item-quantity">Кількість</p>
+                <p class="table-p c-item-price">Загалом</p>
             </div>
         </div>
 
         <div class="table-items">
             {% if orders|length == 0 %}
                 <div class="empty-orders-message text-center">
-                    <h3 class="mt-5">You have no orders.</h3>
+                    <h3 class="mt-5">У вас немає замовлень.</h3>
                 </div>
             {% else %}
                 {% for order in orders %}
                     <div class="order">
-                        <p>Order №{{ order.id }}</p>
+                        <p>Замовлення №{{ order.id }}</p>
                         {% for item in order.items.all %}
                             <div class="order-item d-flex justify-content-between align-items-center">
                                 <div class="left-side-items d-flex">
@@ -49,7 +50,7 @@
     </div>
 
     <div class="profile-info">
-        <h3 class="mb-4">Ordering data</h3>
+        <h3 class="mb-4">Дані для замовлення</h3>
         <form method="post" class="profile-form">
             {% csrf_token %}
             <div class="form-blocks d-flex gap-1">
@@ -68,15 +69,15 @@
                     {{ form.postal_code.label_tag }} {{ form.postal_code }} <br>
                     <div class="image-block d-flex flex-column justify-content-center align-items-center">
                         <p class="block-tag mt-4 text-center">
-                            The information will be used when placing an order
+                            Ця інформація буде використана під час оформлення замовлення
                         </p>
                     </div>
                 </div>
             </div>
             <div class="profile-buttons">
-                <button class="default-btn profile-btn">Save</button>
+                <button class="default-btn profile-btn">Зберегти</button>
                 <a href="{% url 'users:logout' %}" class="logout-btn d-flex align-items-center">
-                    Log out of your account
+                    Вийти з облікового запису
                 </a>
             </div>
         </form>
