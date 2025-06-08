@@ -27,6 +27,9 @@ class Order(models.Model):
 
     def __str__(self):
         return f'Order {self.id} from {self.first_name} {self.last_name}'
+    
+    def get_total_cost(self):  
+        return sum(item.total_price for item in self.items.all())
 
     class Meta:
         verbose_name = 'Order'

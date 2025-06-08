@@ -1,0 +1,144 @@
+{% extends 'main/product/base.html' %}
+{% block title %}Історія замовлень{% endblock %}
+
+{% block content %}
+<style>
+.order-history-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.order-block {
+  background-color: #fff;
+  padding: 25px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.order-header {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.order-date, .order-status {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.user-info {
+  margin-top: 15px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  color: #444;
+  background: #f8f9fa;
+  padding: 15px 20px;
+  border-radius: 6px;
+}
+
+.user-info label {
+  font-weight: 600;
+  min-width: 140px;
+  display: inline-block;
+  color: #333;
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.order-table th, .order-table td {
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.order-table th {
+  background-color: #f2f2f2;
+  font-weight: 600;
+}
+
+.order-total {
+  text-align: right;
+  font-weight: bold;
+  font-size: 1rem;
+  color: #000;
+}
+
+.empty-message {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #999;
+  padding: 40px 0;
+}
+</style>
+
+<div class="order-history-container">
+  <h2>Історія замовлень</h2>
+
+  {% if orders %}
+    {% for order in orders %}
+      <div class="order-block">
+        <div class="order-header">Замовлення №{{ order.id }}</div>
+        <div class="order-date">Дата: {{ order.created_at|date:"d.m.Y H:i" }}</div>
+        <div class="order-status">Статус: {{ order.get_status_display }}</div>
+
+        <div class="user-info">
+          <strong>Інформація про клієнта:</strong><br>
+          {{ order.last_name }} {{ order.first_name }} {{ order.middle_name }}<br>
+          {{ order.city }}, вул. {{ order.street }}, буд. {{ order.house_number }}, кв. {{ order.apartment_number }}<br>
+          Поштовий індекс: {{ order.postal_code }}
+        </div>
+
+        <table class="order-table">
+          <thead>
+            <tr>
+              <th>Товар</th>
+              <th>Кількість</th>
+              <th>Ціна</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in order.items.all %}
+              <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.total_price }} грн</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div class="user-info">
+          <strong>Ordering data:</strong><br>
+          <label>First name:</label> {{ order.first_name }}<br>
+          <label>Last name:</label> {{ order.last_name }}<br>
+          <label>Middle name:</label> {{ order.middle_name }}<br>
+          <label>City:</label> {{ order.city }}<br>
+          <label>Street:</label> {{ order.street }}<br>
+          <label>House number:</label> {{ order.house_number }}<br>
+          <label>Apartment number:</label> {{ order.apartment_number }}<br>
+          <label>Postal code:</label> {{ order.postal_code }}<br>
+          <p style="font-size: 0.85rem; color: #888; margin-top: 10px;">
+            The information will be used when placing an order.
+          </p>
+        </div>
+
+        <div class="order-total">Разом: {{ order.get_total_cost }} грн</div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-message">У вас ще немає замовлень.</div>
+  {% endif %}
+</div>
+{% endblock %}

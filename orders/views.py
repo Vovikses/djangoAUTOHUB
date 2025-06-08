@@ -9,6 +9,9 @@ import stripe
 stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
 
 @login_required(login_url='/users/login')
+def order_history(request):
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'orders/order_history.html', {'orders': orders})
 def order_create(request):
     cart = Cart(request)
     total_price = sum(item['total_price'] for item in cart)

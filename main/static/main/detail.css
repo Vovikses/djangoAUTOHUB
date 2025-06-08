@@ -167,8 +167,7 @@
 .quantity-controls {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 5px;
 }
 
 .quantity-btn {
@@ -485,5 +484,15 @@
 .quantity-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+
+.quantity-input {
+  width: 60px;
+  text-align: center;
+  padding: 6px 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
